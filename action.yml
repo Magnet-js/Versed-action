@@ -1,0 +1,33 @@
+name: "RuleFuse Code Review"
+description: "AI-powered code review for your pull requests using RuleFuse"
+
+branding:
+  icon: shield
+  color: blue
+
+inputs:
+  api_token:
+    description: "Your RuleFuse API token"
+    required: true
+  repo_id:
+    description: "Your RuleFuse Repo ID"
+    required: true
+  api_url:
+    description: "RuleFuse API URL"
+    required: false
+    default: "https://api.rulefuse.io"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run RuleFuse Review
+      shell: bash
+      env:
+        RULEFUSE_API_TOKEN: ${{ inputs.api_token }}
+        RULEFUSE_REPO_ID: ${{ inputs.repo_id }}
+        RULEFUSE_API_URL: ${{ inputs.api_url }}
+        GH_TOKEN: ${{ github.token }}
+        PR_NUMBER: ${{ github.event.pull_request.number }}
+        PR_TITLE: ${{ github.event.pull_request.title }}
+        REPO: ${{ github.repository }}
+      run: ${{ github.action_path }}/entrypoint.sh
