@@ -1,5 +1,5 @@
-name: "RuleFuse Code Review"
-description: "AI-powered code review for your pull requests using RuleFuse"
+name: "Versed Code Review"
+description: "AI-powered code review for your pull requests using Versed"
 
 branding:
   icon: shield
@@ -7,25 +7,25 @@ branding:
 
 inputs:
   api_token:
-    description: "Your RuleFuse API token"
+    description: "Your Versed API token"
     required: true
   repo_id:
-    description: "Your RuleFuse Repo ID"
+    description: "Your Versed Repo ID"
     required: true
   api_url:
-    description: "RuleFuse API URL"
+    description: "Versed API URL"
     required: false
-    default: "https://api.rulefuse.io"
+    default: "https://api.useversed.com"
 
 runs:
   using: "composite"
   steps:
-    - name: Run RuleFuse Review
+    - name: Run Versed Review
       shell: bash
       env:
-        RULEFUSE_API_TOKEN: ${{ inputs.api_token }}
-        RULEFUSE_REPO_ID: ${{ inputs.repo_id }}
-        RULEFUSE_API_URL: ${{ inputs.api_url }}
+        VERSED_API_TOKEN: ${{ inputs.api_token }}
+        VERSED_REPO_ID: ${{ inputs.repo_id }}
+        VERSED_API_URL: ${{ inputs.api_url }}
         GH_TOKEN: ${{ github.token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         PR_TITLE: ${{ github.event.pull_request.title }}

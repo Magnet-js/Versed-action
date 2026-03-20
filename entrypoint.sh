@@ -7,7 +7,7 @@ PENDING_RESPONSE=$(gh api \
   --method POST \
   -H "Accept: application/vnd.github+json" \
   "/repos/${REPO}/issues/${PR_NUMBER}/comments" \
-  -f body="⏳ **RuleFuse** is reviewing your changes...")
+  -f body="⏳ **Versed** is reviewing your changes...")
 
 COMMENT_ID=$(echo "$PENDING_RESPONSE" | jq -r '.id')
 echo "Pending comment posted (id: $COMMENT_ID)"
@@ -26,17 +26,17 @@ fi
 # Truncate diff to 50k chars to avoid hitting token limits
 DIFF="${DIFF:0:50000}"
 
-# ── 3. Send diff to RuleFuse backend ────────────────────────────────────────
-echo "Sending diff to RuleFuse..."
+# ── 3. Send diff to Versed backend ──────────────────────────────────────────
+echo "Sending diff to Versed..."
 PAYLOAD=$(jq -n \
-  --argjson repo_id "$RULEFUSE_REPO_ID" \
+  --argjson repo_id "$VERSED_REPO_ID" \
   --arg diff "$DIFF" \
   --arg pr_title "${PR_TITLE:-}" \
   '{"repo_id": $repo_id, "diff": $diff, "pr_title": $pr_title}')
 
 REVIEW_RESPONSE=$(curl -s -w "\n%{http_code}" \
-  -X POST "${RULEFUSE_API_URL}/api/review" \
-  -H "Authorization: Bearer ${RULEFUSE_API_TOKEN}" \
+  -X POST "${VERSED_API_URL}/api/review" \
+  -H "Authorization: Bearer ${VERSED_API_TOKEN}" \
   -H "Content-Type: application/json" \
   -d "$PAYLOAD")
 
@@ -44,12 +44,12 @@ HTTP_CODE=$(echo "$REVIEW_RESPONSE" | tail -1)
 BODY=$(echo "$REVIEW_RESPONSE" | sed '$d')
 
 if [ "$HTTP_CODE" != "200" ]; then
-  echo "RuleFuse API error (HTTP $HTTP_CODE): $BODY"
+  echo "Versed API error (HTTP $HTTP_CODE): $BODY"
   gh api \
     --method PATCH \
     -H "Accept: application/vnd.github+json" \
     "/repos/${REPO}/issues/comments/${COMMENT_ID}" \
-    -f body="❌ **RuleFuse** failed to review this PR. Please check your configuration."
+    -f body="❌ **Versed** failed to review this PR. Please check your configuration."
   exit 1
 fi
 
@@ -69,7 +69,7 @@ else
   STATUS_BADGE="✅ Passed"
 fi
 
-COMMENT="## 🔍 RuleFuse Code Review — ${STATUS_BADGE}
+COMMENT="## 🔍 Versed Code Review — ${STATUS_BADGE}
 
 ${SUMMARY}"
 
@@ -94,7 +94,7 @@ fi
 COMMENT="${COMMENT}
 
 ---
-*Powered by [RuleFuse](https://rulefuse.io)*"
+*Powered by [Versed](https://useversed.com)*"
 
 # Update the pending comment with the final review
 gh api \
