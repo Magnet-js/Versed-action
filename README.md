@@ -123,12 +123,6 @@ Using `@main` is not recommended in production as it may include unreleased chan
 
 ---
 
-## Pricing
-
-Versed charges per PR review at approximately **€0.001 per review**. See [useversed.com](https://useversed.com) for details. Usage and costs are visible in the dashboard.
-
----
-
 ## License
 
 MIT
